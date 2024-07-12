@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loan-ms-deployment
+  labels:
+    app: loan-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loan-ms
+  template:
+    metadata:
+      labels:
+        app: loan-ms
+    spec:
+      containers:
+      - name: loan-ms
+        image: NTTBanktesteastus2acr.azurecr.io/loan-microservice:latest
+        ports:
+        - containerPort: 8083
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loan-ms-service
+spec:
+  selector:
+    app: loan-ms
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083

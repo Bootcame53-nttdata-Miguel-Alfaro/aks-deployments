@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-ms-deployment
+  labels:
+    app: account-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account-ms
+  template:
+    metadata:
+      labels:
+        app: account-ms
+    spec:
+      containers:
+      - name: account-ms
+        image: NTTBanktesteastus2acr.azurecr.io/account-microservice:latest
+        ports:
+        - containerPort: 8081
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-ms-service
+spec:
+  selector:
+    app: account-ms
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081

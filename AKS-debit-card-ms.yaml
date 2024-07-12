@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debit-card-ms-deployment
+  labels:
+    app: debit-card-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debit-card-ms
+  template:
+    metadata:
+      labels:
+        app: debit-card-ms
+    spec:
+      containers:
+      - name: debit-card-ms
+        image: NTTBanktesteastus2acr.azurecr.io/debit-card-microservice:latest
+        ports:
+        - containerPort: 8085
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: debit-card-ms-service
+spec:
+  selector:
+    app: debit-card-ms
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085

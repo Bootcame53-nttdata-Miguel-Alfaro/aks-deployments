@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-ms-deployment
+  labels:
+    app: product-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-ms
+  template:
+    metadata:
+      labels:
+        app: product-ms
+    spec:
+      containers:
+      - name: product-ms
+        image: NTTBanktesteastus2acr.azurecr.io/product-microservice:latest
+        ports:
+        - containerPort: 8084
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-ms-service
+spec:
+  selector:
+    app: product-ms
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
